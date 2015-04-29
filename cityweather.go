@@ -134,7 +134,7 @@ const upperTemplateHTML = `
     <!-- Header -->
     <header id="top" class="header">
         <div class="text-vertical-center">
-            <h3>{{html .}}</h3>
+            <h3>{{.}}</h3>
             <a href="/" class="btn btn-dark btn-lg">Try Again</a>
         </div>
     </header>
