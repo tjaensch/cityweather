@@ -96,7 +96,8 @@ func showweather(w http.ResponseWriter, r *http.Request) {
 		panic(dataReadErr)
 	}
 
-	res := make(map[string]interface{})
+	//res := make(map[string]interface{})
+	var res weatherData
 
 	json.Unmarshal(body, &res)
 
@@ -104,6 +105,11 @@ func showweather(w http.ResponseWriter, r *http.Request) {
 	if tempErr != nil {
 		http.Error(w, tempErr.Error(), http.StatusInternalServerError)
 	}
+}
+
+type weatherData struct {
+	Name    string        `json:"name"`
+	Weather []interface{} `json:"weather"`
 }
 
 const upperTemplateHTML = ` 
