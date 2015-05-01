@@ -30,7 +30,7 @@ const rootForm = `
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="city, temperature, golang, go_appengine">
     <meta name="author" content="Thomas Jaensch">
-    <title>City Temperature</title>
+    <title>City Weather</title>
     <!-- Bootstrap Core CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom CSS -->
@@ -121,7 +121,7 @@ const upperTemplateHTML = `
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="city, temperature, golang, go_appengine">
     <meta name="author" content="Thomas Jaensch">
-    <title>City Temperature</title>
+    <title>City Weather</title>
     <!-- Bootstrap Core CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom CSS -->
