@@ -108,8 +108,10 @@ func showweather(w http.ResponseWriter, r *http.Request) {
 }
 
 type weatherData struct {
-	Name    string        `json:"name"`
-	Weather []interface{} `json:"weather"`
+	Name    string `json:"name"`
+	Weather []struct {
+		Description string `json:"description"`
+	} `json:"weather"`
 }
 
 const upperTemplateHTML = ` 
