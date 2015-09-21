@@ -108,10 +108,12 @@ func showweather(w http.ResponseWriter, r *http.Request) {
 }
 
 type weatherData struct {
-	Name    string `json:"name"`
-	Weather []struct {
-		Description string `json:"description"`
-	} `json:"weather"`
+	Name    string    `json:"name"`
+	Weather []weather `json:"weather"`
+}
+
+type weather struct {
+	Description string `json:"description"`
 }
 
 const upperTemplateHTML = ` 
@@ -142,7 +144,9 @@ const upperTemplateHTML = `
     <!-- Header -->
     <header id="top" class="header">
         <div class="text-vertical-center">
-            <h3>{{.}}</h3>
+            <h3>{{.Name}}: {{range .Weather}}
+                {{.Description}}
+            {{end}}</h3>
             <a href="/" class="btn btn-dark btn-lg">Try Again</a>
         </div>
     </header>
