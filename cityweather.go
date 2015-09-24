@@ -50,8 +50,8 @@ const rootForm = `
     <header id="top" class="header">
         <div class="text-vertical-center">
             <h1>City Weather</h1>
-            <h3>Enter a city name to see the current weather data*</h3>
-            <p><small>*returns raw data from openweathermap.org API</small></p>
+            <h3>Enter a city name to see the current weather conditions*</h3>
+            <p><small>*returns raw data from openweathermap.org API, source code on <a href="https://github.com/tjaensch/cityweather" target="blank">GitHub</a></small></p>
             <br>
             <form action="/showweather" method="post" accept-charset="utf-8">
                     <input type="text" name="city" placeholder="Enter city name" id="city" />
