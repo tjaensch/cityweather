@@ -1,4 +1,4 @@
-package cityweather
+package main
 
 import (
 	"encoding/json"
@@ -7,14 +7,30 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
-
-	"appengine"
-	"appengine/urlfetch"
 )
 
-func init() {
+type weatherData struct {
+	Name    string    `json:"name"`
+	Weather []weather `json:"weather"`
+}
+
+type weather struct {
+	Description string `json:"description"`
+}
+
+var (
+	err      error
+	res      weatherData
+	response *http.Response
+	body     []byte
+)
+
+func main() {
+	fs := http.FileServer(http.Dir("css"))
+	http.Handle("/css/", http.StripPrefix("/css/", fs))
 	http.HandleFunc("/", handler)
 	http.HandleFunc("/showweather", showweather)
+	http.ListenAndServe(":8080", nil)
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
@@ -34,7 +50,7 @@ const rootForm = `
     <!-- Bootstrap Core CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom CSS -->
-    <link href="/stylesheets/cityweather.css" rel="stylesheet">
+    <link href="/css/cityweather.css" rel="stylesheet">
     <!-- Custom Fonts -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
@@ -77,27 +93,20 @@ func showweather(w http.ResponseWriter, r *http.Request) {
 	city_value := r.FormValue("city")
 
 	safe_city_value := url.QueryEscape(city_value)
-	fullUrl := fmt.Sprintf("http://api.openweathermap.org/data/2.5/weather?q=%s", safe_city_value)
+	apikey := "&APPID=e637873503756b3e4182c1b0e80e8881"
+	fullUrl := fmt.Sprintf("http://api.openweathermap.org/data/2.5/weather?q=%s", safe_city_value+apikey)
 
-	c := appengine.NewContext(r)
-	client := urlfetch.Client(c)
-
-	resp, err := client.Get(fullUrl)
+	response, err = http.Get(fullUrl)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		fmt.Println(err)
 	}
 
-	defer resp.Body.Close()
+	defer response.Body.Close()
 
-	// Read the content into a byte array
-	body, dataReadErr := ioutil.ReadAll(resp.Body)
-	if dataReadErr != nil {
-		panic(dataReadErr)
+	body, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		fmt.Println(err)
 	}
-
-	//res := make(map[string]interface{})
-	var res weatherData
 
 	json.Unmarshal(body, &res)
 
@@ -105,15 +114,6 @@ func showweather(w http.ResponseWriter, r *http.Request) {
 	if tempErr != nil {
 		http.Error(w, tempErr.Error(), http.StatusInternalServerError)
 	}
-}
-
-type weatherData struct {
-	Name    string    `json:"name"`
-	Weather []weather `json:"weather"`
-}
-
-type weather struct {
-	Description string `json:"description"`
 }
 
 const upperTemplateHTML = ` 
@@ -129,7 +129,7 @@ const upperTemplateHTML = `
     <!-- Bootstrap Core CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom CSS -->
-    <link href="/stylesheets/cityweather.css" rel="stylesheet">
+    <link href="/css/cityweather.css" rel="stylesheet">
     <!-- Custom Fonts -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
