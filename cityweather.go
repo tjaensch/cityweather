@@ -10,7 +10,10 @@ import (
 )
 
 type weatherData struct {
-	Name    string    `json:"name"`
+	Name string `json:"name"`
+	Sys  struct {
+		Country string `json:"country"`
+	}
 	Weather []weather `json:"weather"`
 }
 
@@ -144,7 +147,7 @@ const upperTemplateHTML = `
     <!-- Header -->
     <header id="top" class="header">
         <div class="text-vertical-center">
-            <h3>{{.Name}}: {{range .Weather}}
+            <h3>{{.Name}} ({{.Sys.Country}}): {{range .Weather}}
                 {{.Description}}
             {{end}}</h3>
             <a href="/" class="btn btn-dark btn-lg">Try Again</a>
