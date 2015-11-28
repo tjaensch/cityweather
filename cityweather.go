@@ -11,10 +11,17 @@ import (
 
 type weatherData struct {
 	Name string `json:"name"`
-	Sys  struct {
+	Main struct {
+		Temp float64 `json:"temp"`
+	}
+	Sys struct {
 		Country string `json:"country"`
 	}
 	Weather []weather `json:"weather"`
+}
+
+func (w weatherData) Fahrenheit() int {
+	return int(w.Main.Temp*9/5 - 459.67)
 }
 
 type weather struct {
@@ -29,6 +36,7 @@ var (
 )
 
 func main() {
+
 	fs := http.FileServer(http.Dir("css"))
 	http.Handle("/css/", http.StripPrefix("/css/", fs))
 	http.HandleFunc("/", handler)
@@ -149,7 +157,7 @@ const upperTemplateHTML = `
         <div class="text-vertical-center">
             <h3>{{.Name}} ({{.Sys.Country}}): {{range .Weather}}
                 {{.Description}}
-            {{end}}</h3>
+            {{end}}, {{.Fahrenheit}} ºF</h3>
             <a href="/" class="btn btn-dark btn-lg">Try Again</a>
         </div>
     </header>
