@@ -2,4 +2,6 @@
 
 Small app written in Go with Bootstrap CSS that returns city weather data from the openweathermap.org API.
 
-Live link on Google App Engine: http://cityweathergolang.appspot.com/
+CD into application folder and run "go run cityweather.go"
+
+![cityweather.png](https://raw.github.com/tjaensch/cityweather/cityweather.png)

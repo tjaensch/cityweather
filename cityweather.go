@@ -41,6 +41,7 @@ func main() {
 	http.Handle("/css/", http.StripPrefix("/css/", fs))
 	http.HandleFunc("/", handler)
 	http.HandleFunc("/showweather", showweather)
+	fmt.Printf("Listening on http://localhost:8080/")
 	http.ListenAndServe(":8080", nil)
 }
 
