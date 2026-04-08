@@ -9,7 +9,7 @@ schedule: "0 10 * * 1"
 base_branch: master
 stale_pr_days: 3
 
-backend: copilot
+backend: openai
 model: ""
 timeout: 900
 
