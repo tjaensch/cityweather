@@ -65,7 +65,7 @@ const rootForm = `
     <link href="/css/cityweather.css" rel="stylesheet">
     <!-- Custom Fonts -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-    <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -106,7 +106,7 @@ func showweather(w http.ResponseWriter, r *http.Request) {
 
 	safe_city_value := url.QueryEscape(city_value)
 	apikey := "&APPID=e637873503756b3e4182c1b0e80e8881"
-	fullUrl := fmt.Sprintf("http://api.openweathermap.org/data/2.5/weather?q=%s", safe_city_value+apikey)
+	fullUrl := fmt.Sprintf("https://api.openweathermap.org/data/2.5/weather?q=%s", safe_city_value+apikey)
 
 	response, err = http.Get(fullUrl)
 	if err != nil {
@@ -144,7 +144,7 @@ const upperTemplateHTML = `
     <link href="/css/cityweather.css" rel="stylesheet">
     <!-- Custom Fonts -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-    <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
