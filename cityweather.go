@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"os"
 )
 
 type weatherData struct {
@@ -105,8 +106,13 @@ func showweather(w http.ResponseWriter, r *http.Request) {
 	city_value := r.FormValue("city")
 
 	safe_city_value := url.QueryEscape(city_value)
-	apikey := "&APPID=e637873503756b3e4182c1b0e80e8881"
-	fullUrl := fmt.Sprintf("http://api.openweathermap.org/data/2.5/weather?q=%s", safe_city_value+apikey)
+	apikey := os.Getenv("OPENWEATHERMAP_API_KEY")
+	if apikey == "" {
+		http.Error(w, "OPENWEATHERMAP_API_KEY is not set", http.StatusInternalServerError)
+		return
+	}
+	apikey = "&APPID=" + url.QueryEscape(apikey)
+	fullUrl := fmt.Sprintf("https://api.openweathermap.org/data/2.5/weather?q=%s", safe_city_value+apikey)
 
 	response, err = http.Get(fullUrl)
 	if err != nil {
