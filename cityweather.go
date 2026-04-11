@@ -7,7 +7,10 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"os"
 )
+
+const openWeatherAPIKeyEnv = "OPENWEATHERMAP_API_KEY"
 
 type weatherData struct {
 	Name string `json:"name"`
@@ -105,19 +108,26 @@ func showweather(w http.ResponseWriter, r *http.Request) {
 	city_value := r.FormValue("city")
 
 	safe_city_value := url.QueryEscape(city_value)
-	apikey := "&APPID=e637873503756b3e4182c1b0e80e8881"
-	fullUrl := fmt.Sprintf("http://api.openweathermap.org/data/2.5/weather?q=%s", safe_city_value+apikey)
+	apikey := os.Getenv(openWeatherAPIKeyEnv)
+	if apikey == "" {
+		http.Error(w, "OpenWeatherMap API key is not configured", http.StatusInternalServerError)
+		return
+	}
+
+	fullUrl := fmt.Sprintf("https://api.openweathermap.org/data/2.5/weather?q=%s&APPID=%s", safe_city_value, url.QueryEscape(apikey))
 
 	response, err = http.Get(fullUrl)
 	if err != nil {
-		fmt.Println(err)
+		http.Error(w, err.Error(), http.StatusBadGateway)
+		return
 	}
 
 	defer response.Body.Close()
 
 	body, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		fmt.Println(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
 	json.Unmarshal(body, &res)
