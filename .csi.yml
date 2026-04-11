@@ -17,7 +17,7 @@ schedule: "0 10 * * 1"
 
 # ── Branch settings ───────────────────────────────────────────────────────
 # Branch to base CSI fix branches on, and the PR target.
-base_branch: main
+base_branch: master
 
 # How many days before an unmerged CSI PR is automatically closed.
 stale_pr_days: 3
