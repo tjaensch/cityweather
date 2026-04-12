@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"os"
 )
 
 type weatherData struct {
@@ -27,13 +28,6 @@ func (w weatherData) Fahrenheit() int {
 type weather struct {
 	Description string `json:"description"`
 }
-
-var (
-	err      error
-	res      weatherData
-	response *http.Response
-	body     []byte
-)
 
 func main() {
 
@@ -102,29 +96,37 @@ const rootForm = `
 var upperTemplate = template.Must(template.New("showweather").Parse(upperTemplateHTML))
 
 func showweather(w http.ResponseWriter, r *http.Request) {
-	city_value := r.FormValue("city")
-
-	safe_city_value := url.QueryEscape(city_value)
-	apikey := "&APPID=e637873503756b3e4182c1b0e80e8881"
-	fullUrl := fmt.Sprintf("http://api.openweathermap.org/data/2.5/weather?q=%s", safe_city_value+apikey)
-
-	response, err = http.Get(fullUrl)
-	if err != nil {
-		fmt.Println(err)
+	cityValue := r.FormValue("city")
+	safeCityValue := url.QueryEscape(cityValue)
+	apiKey := os.Getenv("OPENWEATHERMAP_API_KEY")
+	if apiKey == "" {
+		http.Error(w, "OPENWEATHERMAP_API_KEY is not configured", http.StatusInternalServerError)
+		return
 	}
 
+	fullURL := fmt.Sprintf("https://api.openweathermap.org/data/2.5/weather?q=%s&APPID=%s", safeCityValue, url.QueryEscape(apiKey))
+
+	response, err := http.Get(fullURL)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadGateway)
+		return
+	}
 	defer response.Body.Close()
 
 	body, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		fmt.Println(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
-	json.Unmarshal(body, &res)
+	var res weatherData
+	if err := json.Unmarshal(body, &res); err != nil {
+		http.Error(w, err.Error(), http.StatusBadGateway)
+		return
+	}
 
-	tempErr := upperTemplate.Execute(w, res)
-	if tempErr != nil {
-		http.Error(w, tempErr.Error(), http.StatusInternalServerError)
+	if err := upperTemplate.Execute(w, res); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
 
